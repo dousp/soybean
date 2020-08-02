@@ -2,4 +2,4 @@ rootProject.name = 'soybean'
 // rootProject.children.each {project ->
 //     project.buildFileName = "${project.name}.gradle"
 // }
-include('soybean-demo')
+include 'soybean-demo'

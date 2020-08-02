@@ -7,7 +7,10 @@ apply plugin: "io.freefair.lombok"
 
 
 // java编译的时候缺省状态下会因为中文字符而失败
-[compileJava,compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
+//[compileJava,compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 
 bootJar {
     // 默认不需要打可执行jar包

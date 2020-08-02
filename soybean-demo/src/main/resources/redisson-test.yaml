@@ -1,0 +1,33 @@
+
+---
+# 文件中的字段名称必须与SentinelServersConfig和Config对象里的字段名称相符。
+sentinelServersConfig:
+  idleConnectionTimeout: 10000
+  pingTimeout: 1000
+  connectTimeout: 10000
+  timeout: 3000
+  retryAttempts: 3
+  retryInterval: 1500
+  reconnectionTimeout: 3000
+  failedAttempts: 3
+  password: null
+  subscriptionsPerConnection: 5
+  clientName: null
+  loadBalancer: !<org.redisson.connection.balancer.RoundRobinLoadBalancer> {}
+  slaveSubscriptionConnectionMinimumIdleSize: 1
+  slaveSubscriptionConnectionPoolSize: 50
+  slaveConnectionMinimumIdleSize: 32
+  slaveConnectionPoolSize: 64
+  masterConnectionMinimumIdleSize: 32
+  masterConnectionPoolSize: 64
+  readMode: "SLAVE"
+  sentinelAddresses:
+    - "redis://127.0.0.1:26379"
+    - "redis://127.0.0.1:26389"
+  masterName: "dd-master"
+  database: 0
+threads: 0
+nettyThreads: 0
+# “!”（叹号）显式指示类型，或自定义类型标识。单叹号通常是自定义类型，双叹号是内置类型
+codec: !<org.redisson.codec.JsonJacksonCodec> {}
+transportMode: "NIO"
