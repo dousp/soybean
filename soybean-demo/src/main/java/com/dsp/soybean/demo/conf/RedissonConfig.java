@@ -33,7 +33,8 @@ public class RedissonConfig {
     public RedissonClient redisson() throws IOException {
         // 读取使用Config.fromYAML，如果是Json文件，则使用Config.fromJSON
         String suffix = null == active || "".equals(active) ? "" : "-" + active;
-        Config config = Config.fromYAML(RedissonConfig.class.getClassLoader().getResource(String.join("","redisson" , suffix , ".yml")));
+        String fileName = String.join("","redisson-single" , suffix , ".yaml");
+        Config config = Config.fromYAML(RedissonConfig.class.getClassLoader().getResource(fileName));
         return Redisson.create(config);
     }
 

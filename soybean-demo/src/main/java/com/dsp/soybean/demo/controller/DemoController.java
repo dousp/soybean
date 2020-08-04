@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/demo")
 public class DemoController {
 
-    private static Logger logger = LoggerFactory.getLogger(DemoController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DemoController.class);
 
     @Resource
     private RedisTemplate<String, String> redisTemplate;
