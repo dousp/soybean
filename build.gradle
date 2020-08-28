@@ -6,17 +6,17 @@ buildscript {
     }
     repositories {
         maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter'}
-        maven { url 'https://maven.aliyun.com/repository/gradle-plugin'}
-        maven { url 'https://maven.aliyun.com/repository/spring'}
-        maven { url 'https://maven.aliyun.com/repository/spring-plugin'}
-        maven { url 'https://maven.aliyun.com/repository/google'}
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/spring' }
+        maven { url 'https://maven.aliyun.com/repository/spring-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath ("io.spring.gradle:dependency-management-plugin:${springDMVersion}")
-        classpath ("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath ("io.freefair.gradle:lombok-plugin:${lombokVersion}")
+        classpath("io.spring.gradle:dependency-management-plugin:${springDMVersion}")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.freefair.gradle:lombok-plugin:${lombokVersion}")
     }
 }
 
@@ -41,18 +41,18 @@ allprojects {
     }
 
     ext {
-        set('springCloudVersion', "Hoxton.SR5")
+        set('springCloudVersion', "Hoxton SR7")
     }
 
     repositories {
         maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-        maven{ url 'https://maven.aliyun.com/nexus/content/repositories/jcenter'}
-        maven { url 'https://maven.aliyun.com/repository/gradle-plugin'}
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
     }
 
 }
 
-subprojects{
+subprojects {
 
     apply from: "${rootProject.projectDir}/common.gradle"
 

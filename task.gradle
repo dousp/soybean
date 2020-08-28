@@ -1,0 +1,35 @@
+/**
+ * 自动根据层级深度生成占位符
+ * @param level
+ * @return
+ */
+static def generatorTreeNodePrefix(int level, String startStr) {
+    def s = '|   '
+    for (int i = 0; i < level; i++) {
+        s += ((0 == i) && level != 1 ? startStr : '--')
+    }
+    return s + ' '
+}
+/**
+ * 打印工程目录树
+ * @param dirs
+ * @return
+ */
+def printProjectTree(Map<String, Project> dirs) {
+    if (dirs.size() > 0) {
+        def len = dirs.values().size()
+        def index = 0
+        dirs.values().each { e ->
+            def startStr = (index++ + 1 == len) ? '\\--' : '+--'
+            println generatorTreeNodePrefix(e.depth, startStr) + e.name
+            if (e.childProjects.values().size() > 0) {
+                printProjectTree(e.childProjects)
+            }
+        }
+    }
+}
+
+task printTree << {
+    println '+--- ' + rootProject.name
+    printProjectTree(rootProject.childProjects)
+}
