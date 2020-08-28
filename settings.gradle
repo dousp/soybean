@@ -3,3 +3,4 @@ rootProject.name = 'soybean'
 //     project.buildFileName = "${project.name}.gradle"
 // }
 include 'demo'
+include 'security:security-auth'
