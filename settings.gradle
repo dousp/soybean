@@ -1,6 +1,8 @@
 rootProject.name = 'soybean'
-// rootProject.children.each {project ->
-//     project.buildFileName = "${project.name}.gradle"
-// }
+
 include 'demo'
-include 'security:security-auth'
+include 'security-auth'
+
+rootProject.children.each {project ->
+    project.buildFileName = "${project.name}.gradle"
+}
