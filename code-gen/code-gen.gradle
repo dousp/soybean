@@ -1,0 +1,15 @@
+
+
+dependencies {
+    implementation group: 'com.ibeetl', name: 'beetl-framework-starter', version: '1.2.33.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
