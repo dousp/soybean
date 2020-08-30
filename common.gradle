@@ -1,18 +1,14 @@
 apply plugin: 'java'
-apply plugin: 'idea'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 apply plugin: "io.spring.dependency-management"
 apply plugin: "io.freefair.lombok"
 
-
-// java编译的时候缺省状态下会因为中文字符而失败
-//[compileJava,compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
-bootJar {
-    // 默认不需要打可执行jar包
-    enabled = false
-}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
