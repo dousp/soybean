@@ -5,13 +5,15 @@ import java.util.StringJoiner;
 
 public class Home {
     // 包名
-    private String packageName;
+    private String basePackage;
     // 实体名，作为所有类的前缀
-    private String entityName;
+    private String className;
     // 对应数据库表的名称
     private String tableName;
     // 实体名称、功能名称
     private String displayName;
+    // 注释
+    private String comment;
     // 路由路径，controller等路径标识
     private String rootPath;
     // 实体类相关字段
@@ -21,30 +23,31 @@ public class Home {
     @Override
     public String toString() {
         return new StringJoiner(", ", Home.class.getSimpleName() + "[", "]")
-                .add("packageName='" + packageName + "'")
-                .add("entityName='" + entityName + "'")
+                .add("basePackage='" + basePackage + "'")
+                .add("className='" + className + "'")
                 .add("tableName='" + tableName + "'")
                 .add("displayName='" + displayName + "'")
+                .add("comment='" + comment + "'")
                 .add("rootPath='" + rootPath + "'")
                 .add("members=" + members)
                 .toString();
     }
 
-    public String getPackageName() {
-        return packageName;
+    public String getBasePackage() {
+        return basePackage;
     }
 
-    public Home setPackageName(String packageName) {
-        this.packageName = packageName;
+    public Home setBasePackage(String basePackage) {
+        this.basePackage = basePackage;
         return this;
     }
 
-    public String getEntityName() {
-        return entityName;
+    public String getClassName() {
+        return className;
     }
 
-    public Home setEntityName(String entityName) {
-        this.entityName = entityName;
+    public Home setClassName(String className) {
+        this.className = className;
         return this;
     }
 
@@ -81,6 +84,15 @@ public class Home {
 
     public Home setMembers(ArrayList<Member> members) {
         this.members = members;
+        return this;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public Home setComment(String comment) {
+        this.comment = comment;
         return this;
     }
 }
