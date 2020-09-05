@@ -3,6 +3,8 @@
 dependencies {
     implementation group: 'com.ibeetl', name: 'beetl-framework-starter', version: '1.2.33.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'com.google.guava', name: 'guava', version: '29.0-jre'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {

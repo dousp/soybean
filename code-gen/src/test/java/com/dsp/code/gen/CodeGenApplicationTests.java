@@ -2,15 +2,20 @@ package com.dsp.code.gen;
 
 import com.dsp.code.gen.entity.Home;
 import com.dsp.code.gen.entity.Member;
+import com.dsp.code.gen.service.impl.BeetlGen;
 import com.dsp.code.gen.service.impl.BeetlWay;
+import com.dsp.code.gen.service.impl.JavaControllerGen;
 import com.dsp.code.gen.service.impl.JavaEntityGen;
-import com.ibeetl.starter.BeetlTemplateCustomize;
+import com.dsp.code.gen.service.impl.JavaMapperGen;
+import com.dsp.code.gen.service.impl.JavaServiceGen;
+import com.dsp.code.gen.service.impl.JavaSqlProviderGen;
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.Template;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -42,6 +47,12 @@ class CodeGenApplicationTests {
     }
 
     @Test
+    void testUpper(){
+        System.out.println(BeetlGen.firstLower("Class"));
+        System.out.println(BeetlGen.firstUpper("Class"));
+    }
+
+    @Test
     void testJavaGen(){
 
         ArrayList<Member> members = new ArrayList<>();
@@ -63,7 +74,10 @@ class CodeGenApplicationTests {
 
         members.add(member);
         members.add(member2);
-
+        members.add(member2);
+        members.add(member2);
+        members.add(member2);
+        members.add(member2);
 
         Home home = new Home();
         home.setBasePackage("com.dsp.gen");
@@ -74,10 +88,18 @@ class CodeGenApplicationTests {
         home.setMembers(members);
         home.setComment("test.....");
 
-
-        JavaEntityGen entityGen = new JavaEntityGen(home,"/beetl/java", groupTemplate);
         BeetlWay way = new BeetlWay();
+        JavaEntityGen entityGen = new JavaEntityGen(home,"/beetl/java", groupTemplate);
         entityGen.make(way);
+        JavaMapperGen mapperGen = new JavaMapperGen(home,"/beetl/java", groupTemplate);
+        mapperGen.make(way);
+        JavaSqlProviderGen sqlProviderGen = new JavaSqlProviderGen(home,"/beetl/java", groupTemplate);
+        sqlProviderGen.make(way);
+        JavaServiceGen serviceGen = new JavaServiceGen(home,"/beetl/java", groupTemplate);
+        serviceGen.make(way);
+        JavaControllerGen controllerGen = new JavaControllerGen(home,"/beetl/java", groupTemplate);
+        controllerGen.make(way);
+
     }
 
 }

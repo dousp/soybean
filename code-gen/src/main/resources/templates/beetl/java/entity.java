@@ -1,10 +1,12 @@
-package ${package};
+package ${basePackage};
 
 import java.io.Serializable;
 
 /*
 * ${displayName}
 * ${comment}
+* tableName ${tableName}
+* \@author ${author}
 * \@date ${date(),"yyyy-MM-dd"}
 */
 public class ${className} implements Serializable {
@@ -13,6 +15,7 @@ public class ${className} implements Serializable {
 		@if(!isEmpty(attr.comment)){
     /*
      * ${attr.comment}
+     * ${attr.colName}
     */
 		@}
     private ${attr.type} ${attr.name};

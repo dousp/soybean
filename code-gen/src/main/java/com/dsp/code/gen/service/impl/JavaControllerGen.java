@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JavaEntityGen extends BeetlGen {
+public class JavaControllerGen extends BeetlGen {
 
     private final Home home;
 
-    public JavaEntityGen(Home home, String tplRootPath, GroupTemplate groupTemplate) {
+    public JavaControllerGen(Home home, String tplRootPath, GroupTemplate groupTemplate) {
         super(tplRootPath, groupTemplate);
         this.home = home;
     }
@@ -24,8 +24,8 @@ public class JavaEntityGen extends BeetlGen {
     @Override
     public void make(Way way) {
         GroupTemplate gt = this.groupTemplate;
-        Template template = gt.getTemplate(tplRootPath + "/entity.java");
-        template.binding("basePackage", home.getBasePackage()+".entity");
+        Template template = gt.getTemplate(tplRootPath + "/controller.java");
+        template.binding("basePackage", home.getBasePackage());
         template.binding("className", firstUpper(home.getClassName()));
         template.binding("classNameFL", firstLower(home.getClassName()));
         template.binding("displayName", home.getDisplayName());
@@ -43,11 +43,6 @@ public class JavaEntityGen extends BeetlGen {
             attrs.add(map);
         }
         template.binding("attrs", attrs);
-        String srcHead ="";
-        srcHead+="import java.math.*;"+LINE_SEPARATOR;
-        srcHead+="import java.util.Date;"+LINE_SEPARATOR;
-        srcHead+="import java.sql.Timestamp;"+LINE_SEPARATOR;
-        template.binding("imports", srcHead);
         template.binding("comment", home.getComment());
         String content = template.render();
         way.flush(this, content);
@@ -55,6 +50,6 @@ public class JavaEntityGen extends BeetlGen {
 
     @Override
     public String getFileName() {
-        return home.getClassName() + ".java";
+        return home.getClassName() + "Controller.java";
     }
 }

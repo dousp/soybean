@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.StringJoiner;
 
 public class Home {
+    // 作者
+    private String author;
     // 包名
     private String basePackage;
     // 实体名，作为所有类的前缀
@@ -23,6 +25,7 @@ public class Home {
     @Override
     public String toString() {
         return new StringJoiner(", ", Home.class.getSimpleName() + "[", "]")
+                .add("author='" + author + "'")
                 .add("basePackage='" + basePackage + "'")
                 .add("className='" + className + "'")
                 .add("tableName='" + tableName + "'")
@@ -93,6 +96,15 @@ public class Home {
 
     public Home setComment(String comment) {
         this.comment = comment;
+        return this;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public Home setAuthor(String author) {
+        this.author = author;
         return this;
     }
 }
