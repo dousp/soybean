@@ -25,25 +25,7 @@ public class JavaServiceGen extends BeetlGen {
     public void make(Way way) {
         GroupTemplate gt = this.groupTemplate;
         Template template = gt.getTemplate(tplRootPath + "/service.java");
-        template.binding("basePackage", home.getBasePackage());
-        template.binding("className", firstUpper(home.getClassName()));
-        template.binding("classNameFL", firstLower(home.getClassName()));
-        template.binding("displayName", home.getDisplayName());
-        template.binding("tableName", home.getTableName());
-        template.binding("author", home.getAuthor());
-        List<Map<String,Object>> attrs = new ArrayList<>();
-        for(Member member: home.getMembers()) {
-            Map<String,Object> map = new HashMap<>();
-            map.put("comment", member.getComment());
-            map.put("type", member.getJavaType());
-            map.put("name", member.getName());
-            map.put("colName", member.getColName());
-            map.put("methodName", Gen.upperFirst(member.getName()));
-            map.put("isId", member.isId());
-            attrs.add(map);
-        }
-        template.binding("attrs", attrs);
-        template.binding("comment", home.getComment());
+        binding(template, home);
         String content = template.render();
         way.flush(this, content);
     }

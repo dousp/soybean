@@ -14,17 +14,6 @@ public class BeetlWay implements Way {
     @Override
     public void flush(Gen gen, String content) {
         String target = "";
-        // if (gen instanceof JavaEntityGen) {
-        //     target = getRootPath() + File.separator+ "build" + File.separator + "gen"+ File.separator +gen.getFileName();
-        // }else if (gen instanceof JavaMapperGen) {
-        //     target = getRootPath() + File.separator+ "build" + File.separator + "gen"+ File.separator +gen.getFileName();
-        // }else if (gen instanceof JavaSqlProviderGen) {
-        //     target = getRootPath() + File.separator+ "build" + File.separator + "gen"+ File.separator +gen.getFileName();
-        // }else if (gen instanceof JavaServiceGen) {
-        //     target = getRootPath() + File.separator+ "build" + File.separator + "gen"+ File.separator +gen.getFileName();
-        // }else if (gen instanceof JavaControllerGen) {
-        //     target = getRootPath() + File.separator+ "build" + File.separator + "gen"+ File.separator +gen.getFileName();
-        // }
         target = getRootPath() + File.separator+ "build" + File.separator + "gen"+ File.separator +gen.getFileName();
         flush(target,content);
     }
@@ -47,12 +36,10 @@ public class BeetlWay implements Way {
     }
 
     public String getSrcPath() {
-
         return getRootPath() + File.separator + "src/main/java";
     }
 
     public String getResourcePath() {
-
         return getRootPath() + File.separator + "src/main/resources";
     }
 
