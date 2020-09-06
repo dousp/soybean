@@ -16,12 +16,8 @@ public class ${className}SqlProvider {
         sql.INSERT_INTO("${tableName}");
 
     @for(attr in attrs){
-    @	var jdbcType = "VARCHAR";
-	@	if(attr.isId || attr.javaType == 'long'|| attr.javaType == 'Long') { jdbcType = "BIGINT";}
-	@	else if(attr.javaType == 'Integer' || attr.javaType == 'int') { jdbcType = "INTEGER";}
-	@	else if(attr.javaType == 'Date') { jdbcType = "TIMESTAMP";}
         if (record.get${attr.methodName}() != null) {
-            sql.VALUES("${attr.colName}", "#{${attr.name},jdbcType=${jdbcType}}");
+            sql.VALUES("${attr.colName}", "#{${attr.name},jdbcType=${attr.jdbcType}}");
         }
     @}
         // sql.VALUES("created_on", "now()");
@@ -35,12 +31,8 @@ public class ${className}SqlProvider {
         sql.UPDATE("${tableName}");
 
     @for(attr in attrs){
-    @	var jdbcType = "VARCHAR";
-	@	if(attr.isId || attr.javaType == 'long'|| attr.javaType == 'Long') { jdbcType = "BIGINT";}
-	@	else if(attr.javaType == 'Integer' || attr.javaType == 'int') { jdbcType = "INTEGER";}
-	@	else if(attr.javaType == 'Date') { jdbcType = "TIMESTAMP";}
         if (record.get${attr.methodName}() != null) {
-            sql.SET("${attr.colName} = #{${attr.name},jdbcType=${jdbcType}}");
+            sql.SET("${attr.colName} = #{${attr.name},jdbcType=${attr.jdbcType}}");
         }
     @}
         // sql.SET("updated_on = now() ");
@@ -68,12 +60,8 @@ public class ${className}SqlProvider {
         sql.FROM("${tableName} t ");
 
 	@for(attr in attrs){
-    @	var jdbcType = "VARCHAR";
-	@	if(attr.isId || attr.javaType == 'long'|| attr.javaType == 'Long') { jdbcType = "BIGINT";}
-	@	else if(attr.javaType == 'Integer' || attr.javaType == 'int') { jdbcType = "INTEGER";}
-	@	else if(attr.javaType == 'Date') { jdbcType = "TIMESTAMP";}
         if (record.get${attr.methodName}() != null) {
-            sql.WHERE("${attr.colName} = #{${attr.name},jdbcType=${jdbcType}}");
+            sql.WHERE("${attr.colName} = #{${attr.name},jdbcType=${attr.jdbcType}}");
         }
     @}
 

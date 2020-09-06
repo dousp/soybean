@@ -71,11 +71,7 @@ public interface ${className}Mapper {
 		@for(attr in attrs) {
 		@	var id = attr.isId ? ", id = true" : "";
 		@	var bd = attrLP.last ? "" : ",";
-		@	var jdbcType = "VARCHAR";
-		@	if(attr.isId || attr.javaType == 'long'|| attr.javaType == 'Long') { jdbcType = "BIGINT";}
-		@	else if(attr.javaType == 'Integer' || attr.javaType == 'int') { jdbcType = "INTEGER";}
-		@	else if(attr.javaType == 'Date') { jdbcType = "TIMESTAMP";}
-			\@Result(column = "${attr.colName}", property = "${attr.name}", jdbcType = JdbcType.${jdbcType}${id})${bd}
+			\@Result(column = "${attr.colName}", property = "${attr.name}", jdbcType = JdbcType.${attr.jdbcType}${id})${bd}
 		@}
 	})
 	${className} findById(Long id);
@@ -91,11 +87,7 @@ public interface ${className}Mapper {
 		@for(attr in attrs) {
 		@	var id = attr.isId ? ", id = true" : "";
 		@	var bd = attrLP.last ? "" : ",";
-		@	var jdbcType = "VARCHAR";
-		@	if(attr.isId || attr.javaType == 'long'|| attr.javaType == 'Long') { jdbcType = "BIGINT";}
-		@	else if(attr.javaType == 'Integer' || attr.javaType == 'int') { jdbcType = "INTEGER";}
-		@	else if(attr.javaType == 'Date') { jdbcType = "TIMESTAMP";}
-			\@Result(column = "${attr.colName}", property = "${attr.name}", jdbcType = JdbcType.${jdbcType}${id})${bd}
+			\@Result(column = "${attr.colName}", property = "${attr.name}", jdbcType = JdbcType.${attr.jdbcType}${id})${bd}
 		@}
 	})
 	List<${className}> findByParam(${className} param);

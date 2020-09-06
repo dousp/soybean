@@ -19,6 +19,7 @@ import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 @SpringBootTest
@@ -50,6 +51,16 @@ class CodeGenApplicationTests {
     void testUpper(){
         System.out.println(BeetlGen.firstLower("Class"));
         System.out.println(BeetlGen.firstUpper("Class"));
+    }
+
+    @Test
+    void encoding(){
+        //获取系统默认编码
+        System.out.println("系统默认编码：" + System.getProperty("file.encoding")); //查询结果GBK
+        //系统默认字符编码
+        System.out.println("系统默认字符编码：" + Charset.defaultCharset()); //查询结果GBK
+        //操作系统用户使用的语言
+        System.out.println("系统默认语言：" + System.getProperty("user.language")); //查询结果zh
     }
 
     @Test

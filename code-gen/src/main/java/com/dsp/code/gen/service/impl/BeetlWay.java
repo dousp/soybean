@@ -3,9 +3,7 @@ package com.dsp.code.gen.service.impl;
 import com.dsp.code.gen.service.Gen;
 import com.dsp.code.gen.service.Way;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public class BeetlWay implements Way {
 
@@ -14,23 +12,21 @@ public class BeetlWay implements Way {
     @Override
     public void flush(Gen gen, String content) {
         String target = "";
-        target = getRootPath() + File.separator+ "build" + File.separator + "gen"+ File.separator +gen.getFileName();
-        flush(target,content);
+        System.out.println("rootPath: " + getRootPath());
+        target = getRootPath() + File.separator + "build" + File.separator + "gen" + File.separator + gen.getFileName();
+        write(target,content,"UTF-8");
     }
 
-    protected void flush(String path, String content) {
-        FileWriter fw;
-        try {
-            File file = new File(path);
-            if(!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
-            }
-            fw = new FileWriter(new File(path));
-            fw.write(content);
-            fw.close();
-            System.out.println(path);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+    protected static void write(String path, String content, String encoding){
+        File file = new File(path);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        // file.delete();
+        // file.createNewFile();
+        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding))){
+            writer.write(content);
+        }catch (IOException e){
             e.printStackTrace();
         }
     }
@@ -44,9 +40,9 @@ public class BeetlWay implements Way {
     }
 
     public String getRootPath() {
-        if(targetPath!=null) {
+        if (targetPath != null) {
             return targetPath;
-        }else {
+        } else {
             return detectRootPath();
         }
     }
@@ -68,7 +64,4 @@ public class BeetlWay implements Way {
         return this;
     }
 
-    public static void main(String[] args) {
-        System.out.println(detectRootPath());
-    }
 }

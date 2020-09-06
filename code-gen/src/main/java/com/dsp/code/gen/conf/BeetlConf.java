@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.util.Properties;
 
 @Configuration
 public class BeetlConf {
@@ -30,6 +31,7 @@ public class BeetlConf {
             cfg.setPlaceholderStart("${");
             cfg.setPlaceholderEnd("}");
             cfg.setHtmlTagSupport(false);
+            cfg.setCharset("UTF-8");
             cfg.build();
             gt.setConf(cfg);
         } catch (IOException e) {
@@ -43,12 +45,14 @@ public class BeetlConf {
         BeetlGroupUtilConfiguration beetlGroupUtilConfiguration = new BeetlGroupUtilConfiguration();
         //获取Spring Boot 的ClassLoader
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        if(loader==null){
+        if (loader == null) {
             loader = BeetlConf.class.getClassLoader();
         }
         beetlGroupUtilConfiguration.setResourceLoader(new ClasspathResourceLoader(loader, templatesPath));
         //额外的配置，可以覆盖默认配置，一般不需要
-        // beetlGroupUtilConfiguration.setConfigProperties(extProperties);
+        Properties extProperties = new Properties();
+        extProperties.setProperty("TEMPLATE_CHARSET","UTF-8");
+        beetlGroupUtilConfiguration.setConfigProperties(extProperties);
         beetlGroupUtilConfiguration.init();
         //如果使用了优化编译器，涉及到字节码操作，需要添加ClassLoader
         // beetlGroupUtilConfiguration.getGroupTemplate().setClassLoader(loader);
