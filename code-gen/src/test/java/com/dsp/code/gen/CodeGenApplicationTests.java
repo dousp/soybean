@@ -2,8 +2,8 @@ package com.dsp.code.gen;
 
 import com.dsp.code.gen.entity.Home;
 import com.dsp.code.gen.entity.Member;
-import com.dsp.code.gen.service.impl.BeetlGen;
-import com.dsp.code.gen.service.impl.BeetlWay;
+import com.dsp.code.gen.service.BeetlGen;
+import com.dsp.code.gen.service.BeetlWay;
 import com.dsp.code.gen.service.impl.JavaControllerGen;
 import com.dsp.code.gen.service.impl.JavaEntityGen;
 import com.dsp.code.gen.service.impl.JavaMapperGen;
@@ -15,7 +15,6 @@ import org.beetl.core.Template;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
 import java.io.IOException;

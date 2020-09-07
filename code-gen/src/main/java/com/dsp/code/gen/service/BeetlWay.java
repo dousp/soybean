@@ -1,9 +1,10 @@
-package com.dsp.code.gen.service.impl;
+package com.dsp.code.gen.service;
 
-import com.dsp.code.gen.service.Gen;
-import com.dsp.code.gen.service.Way;
-
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 public class BeetlWay implements Way {
 
