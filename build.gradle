@@ -1,11 +1,19 @@
-
 plugins {
     id 'org.springframework.boot' version '2.3.3.RELEASE' apply(false)
     id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply(false)
-    id "io.freefair.lombok" version "5.1.0" apply(false)
+    id "io.freefair.lombok" version "5.2.1" apply(false)
 }
 
 allprojects {
+
+    repositories {
+        maven {url 'https://maven.aliyun.com/repository/public/'}
+        maven {url 'https://maven.aliyun.com/repository/spring/'}
+        maven { url 'https://maven.aliyun.com/repository/spring-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        mavenLocal()
+    }
 
     apply plugin: 'idea'
 
@@ -27,12 +35,32 @@ allprojects {
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url "https://plugins.gradle.org/m2/" }
     }
-
-
 }
 
 subprojects {
 
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "io.freefair.lombok"
+
     apply from: "${rootProject.projectDir}/common.gradle"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:2.2.1.RELEASE"
+        }
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
 
 }

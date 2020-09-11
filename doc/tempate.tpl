@@ -29,16 +29,15 @@
 //     ext {
 //         springBootVersion = '2.3.3.RELEASE'
 //         springDMVersion = '1.0.10.RELEASE'
-//         lombokVersion = '5.1.0'
+//         lombokVersion = '5.2.1'
 //     }
 //     repositories {
-//         maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-//         maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
-//         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+//         // 这个public是central仓和jcenter仓的聚合仓
+//         maven { url 'https://maven.aliyun.com/repository/public' }
 //         maven { url 'https://maven.aliyun.com/repository/spring' }
 //         maven { url 'https://maven.aliyun.com/repository/spring-plugin' }
+//         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
 //         maven { url 'https://maven.aliyun.com/repository/google' }
-//         maven { url "https://plugins.gradle.org/m2/" }
 //     }
 //     dependencies {
 //         classpath("io.spring.gradle:dependency-management-plugin:${springDMVersion}")
