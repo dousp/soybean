@@ -1,6 +1,6 @@
 rootProject.name = 'soybean'
 
-include 'demo'
+include 'soy-demo'
 include 'soy-code-gen'
 include 'soy-auth'
 include 'soy-route'

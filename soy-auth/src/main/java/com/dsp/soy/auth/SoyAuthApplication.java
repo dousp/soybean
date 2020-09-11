@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-public class SecurityAuthApplication {
+public class SoyAuthApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SecurityAuthApplication.class, args);
+        SpringApplication.run(SoyAuthApplication.class, args);
     }
 
     @RestController

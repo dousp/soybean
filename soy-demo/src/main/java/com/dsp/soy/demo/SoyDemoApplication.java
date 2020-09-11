@@ -1,13 +1,13 @@
-package com.dsp.soybean.demo;
+package com.dsp.soy.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class SoyDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(SoyDemoApplication.class, args);
     }
 
 }

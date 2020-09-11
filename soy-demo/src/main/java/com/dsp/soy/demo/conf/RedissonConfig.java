@@ -1,4 +1,4 @@
-package com.dsp.soybean.demo.conf;
+package com.dsp.soy.demo.conf;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

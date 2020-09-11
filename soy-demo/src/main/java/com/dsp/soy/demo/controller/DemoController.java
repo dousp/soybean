@@ -1,4 +1,4 @@
-package com.dsp.soybean.demo.controller;
+package com.dsp.soy.demo.controller;
 
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;

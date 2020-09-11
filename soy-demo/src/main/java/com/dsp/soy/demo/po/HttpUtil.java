@@ -1,4 +1,4 @@
-package com.dsp.soybean.demo.po;
+package com.dsp.soy.demo.po;
 
 import okhttp3.*;
 
