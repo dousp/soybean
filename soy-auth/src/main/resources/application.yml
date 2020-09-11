@@ -1,0 +1,7 @@
+server:
+  port: 8072
+spring:
+  application:
+    name: soy-auth
+  profiles:
+    active: dev
