@@ -1,3 +1,5 @@
 /logs
 /data
 /bin/logs
+/bin/*.log
+/target
