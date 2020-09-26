@@ -36,7 +36,6 @@ public class RedissonConfig {
         String suffix = null == active || "".equals(active) ? "" : "-" + active;
         String fileName = String.join("","redisson-single" , suffix , ".yaml");
         Config config = Config.fromYAML(RedissonConfig.class.getClassLoader().getResource(fileName));
-        config.setCodec(new JsonJacksonCodec());
         return Redisson.create(config);
     }
 
