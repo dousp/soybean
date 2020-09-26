@@ -2,6 +2,7 @@ package com.dsp.soy.demo.conf;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +36,7 @@ public class RedissonConfig {
         String suffix = null == active || "".equals(active) ? "" : "-" + active;
         String fileName = String.join("","redisson-single" , suffix , ".yaml");
         Config config = Config.fromYAML(RedissonConfig.class.getClassLoader().getResource(fileName));
+        config.setCodec(new JsonJacksonCodec());
         return Redisson.create(config);
     }
 

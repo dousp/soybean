@@ -9,6 +9,8 @@ dependencies {
     implementation 'org.redisson:redisson-spring-boot-starter:3.13.3'
     implementation group: 'de.ruedigermoeller', name: 'fst', version: '2.57'
     implementation("com.squareup.okhttp3:okhttp:4.8.0")
+    implementation group: 'com.github.whvcse', name: 'easy-captcha', version: '1.6.2'
+
     // test
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
