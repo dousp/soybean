@@ -1,11 +1,15 @@
 package com.dsp.soy.auth.conf;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import java.security.interfaces.RSAPublicKey;
 
 @EnableWebSecurity
 public class OAuth2ClientSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -21,22 +25,22 @@ public class OAuth2ClientSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests(authorize -> authorize
-                .anyRequest().authenticated()
+                .antMatchers("/message/**").hasAuthority("SCOPE_message:read")
             )
-            .formLogin(withDefaults())
-            .httpBasic(withDefaults())
-            .oauth2Client()
-            // .oauth2Client(oauth2 -> oauth2
-            //     .clientRegistrationRepository(this.clientRegistrationRepository())
-            //     .authorizedClientRepository(this.authorizedClientRepository())
-            //     .authorizedClientService(this.authorizedClientService())
-            //     .authorizationCodeGrant(codeGrant -> codeGrant
-            //             .authorizationRequestRepository(this.authorizationRequestRepository())
-            //             .authorizationRequestResolver(this.authorizationRequestResolver())
-            //             .accessTokenResponseClient(this.accessTokenResponseClient())
-            //     )
-            // )
-            ;
+            .oauth2ResourceServer((oauth2ResourceServer) ->
+                    oauth2ResourceServer.jwt(jwt ->
+                            jwt.decoder(jwtDecoder())
+                    )
+            )
+        ;
+    }
+
+    @Value("${spring.security.oauth2.resourceserver.jwt.key-value}")
+    RSAPublicKey key;
+
+    @Bean
+    JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withPublicKey(this.key).build();
     }
 
 
