@@ -1,15 +1,23 @@
 package com.dsp.soy.code.gen.conf;
+import java.io.PrintWriter;
+import com.zaxxer.hikari.metrics.MetricsTrackerFactory;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.ext.spring.BeetlGroupUtilConfiguration;
 import org.beetl.ext.spring.BeetlSpringViewResolver;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -69,5 +77,4 @@ public class BeetlConf {
 
         return beetlSpringViewResolver;
     }
-
 }

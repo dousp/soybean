@@ -3,7 +3,9 @@
 dependencies {
     implementation group: 'com.ibeetl', name: 'beetl-framework-starter', version: '1.2.33.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation group: 'com.google.guava', name: 'guava', version: '29.0-jre'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
