@@ -1,0 +1,9 @@
+
+spring:
+  application:
+    name: soy-uaa
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/user_db?useUnicode=true
+#    username: sdd
+#    password: dsa
+#    driver-class-name: com.mysql.cj.jdbc.Driver

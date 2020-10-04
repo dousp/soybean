@@ -4,6 +4,7 @@ include 'soy-demo'
 include 'soy-code-gen'
 include 'soy-auth'
 include 'soy-route'
+include 'soy-uaa'
 
 rootProject.children.each {project ->
     project.buildFileName = "${project.name}.gradle"
