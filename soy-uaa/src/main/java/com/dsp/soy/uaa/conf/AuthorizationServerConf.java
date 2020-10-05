@@ -2,6 +2,7 @@ package com.dsp.soy.uaa.conf;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,7 +15,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
@@ -45,7 +45,9 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
     private final String SIGNING_KEY = "uaa123";
 
 
-    // 令牌存储方式
+    /**
+     * 令牌存储方式
+     */
     @Bean
     public TokenStore tokenStore() {
         //使用内存存储令牌（普通令牌）
@@ -63,9 +65,12 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
     }
 
 
-    // 令牌管理服务
+    /**
+     * 令牌管理服务
+     */
+    @Primary
     @Bean
-    public AuthorizationServerTokenServices authorizationServerTokenServices() {
+    public DefaultTokenServices defaultTokenServices() {
         DefaultTokenServices service=new DefaultTokenServices();
         service.setClientDetailsService(clientDetailsService);// 客户端详情服务
         service.setSupportRefreshToken(true);// 支持刷新令牌
@@ -80,7 +85,9 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
         return service;
     }
 
-    // 设置授权码模式的授权码如何存取，暂时采用内存方式
+    /**
+     * 设置授权码模式的授权码如何存取，暂时采用内存方式
+     */
     @Bean
     public AuthorizationCodeServices authorizationCodeServices() {
         return new InMemoryAuthorizationCodeServices();
@@ -100,7 +107,9 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
     // }
 
 
-    // 客户端详情服务
+    /**
+     * 客户端详情服务
+     */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients)
             throws Exception {
@@ -141,7 +150,7 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
                 // 授权码服务
                 .authorizationCodeServices(authorizationCodeServices())
                 // 令牌管理服务
-                .tokenServices(authorizationServerTokenServices())
+                .tokenServices(defaultTokenServices())
                 .allowedTokenEndpointRequestMethods(HttpMethod.POST);
     }
 
