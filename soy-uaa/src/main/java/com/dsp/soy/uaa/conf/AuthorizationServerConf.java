@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -15,10 +14,14 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 
 /**
  * @author dsp
@@ -30,12 +33,8 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
 
     @Resource
     private AuthenticationManager authenticationManager;
-    // @Resource
-    // private AuthorizationServerTokenServices authorizationServerTokenServices;
-    // @Resource
-    // private AuthorizationCodeServices authorizationCodeServices;
     @Resource
-    private PasswordEncoder passwordEncoder;
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
     @Resource
     private ClientDetailsService clientDetailsService;
     @Resource
@@ -47,18 +46,22 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
      */
     @Primary
     @Bean
-    public DefaultTokenServices defaultTokenServices() {
-        DefaultTokenServices service=new DefaultTokenServices();
-        service.setClientDetailsService(clientDetailsService);// 客户端详情服务
-        service.setSupportRefreshToken(true);// 支持刷新令牌
-        service.setTokenStore(tokenStore);// 令牌存储策略
-        //令牌增强
-        // TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-        // tokenEnhancerChain.setTokenEnhancers(Collections.singletonList(accessTokenConverter()));
-        // service.setTokenEnhancer(tokenEnhancerChain);
-
-        service.setAccessTokenValiditySeconds(7200); // 令牌默认有效期2小时
-        service.setRefreshTokenValiditySeconds(259200); // 刷新令牌默认有效期3天
+    public AuthorizationServerTokenServices authorizationServerTokenServices() {
+        DefaultTokenServices service = new DefaultTokenServices();
+        // 客户端详情服务
+        service.setClientDetailsService(clientDetailsService);
+        // 支持刷新令牌
+        service.setSupportRefreshToken(true);
+        // 令牌存储策略
+        service.setTokenStore(tokenStore);
+        // 令牌增强
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Collections.singletonList(jwtAccessTokenConverter));
+        service.setTokenEnhancer(tokenEnhancerChain);
+        // 令牌默认有效期2小时
+        service.setAccessTokenValiditySeconds(7200);
+        // 刷新令牌默认有效期3天
+        service.setRefreshTokenValiditySeconds(259200);
         return service;
     }
 
@@ -100,7 +103,7 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
                 // 资源列表
                 .resourceIds("res1")
                 // 该client允许的授权类型authorization_code,password,refresh_token,implicit,client_credentials
-                .authorizedGrantTypes("authorization_code", "password","client_credentials","implicit","refresh_token")
+                .authorizedGrantTypes("authorization_code", "password", "client_credentials", "implicit", "refresh_token")
                 // 允许的授权范围
                 .scopes("all")
                 // false跳转到授权页面
@@ -127,7 +130,7 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
                 // 授权码服务
                 .authorizationCodeServices(authorizationCodeServices())
                 // 令牌管理服务
-                .tokenServices(defaultTokenServices())
+                .tokenServices(authorizationServerTokenServices())
                 .allowedTokenEndpointRequestMethods(HttpMethod.POST);
     }
 
@@ -135,7 +138,7 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
      * 认证服务安全设置
      */
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security){
+    public void configure(AuthorizationServerSecurityConfigurer security) {
         security
                 // oauth/token_key是公开
                 .tokenKeyAccess("permitAll()")
@@ -145,8 +148,5 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
                 .allowFormAuthenticationForClients()
         ;
     }
-
-
-
 
 }
