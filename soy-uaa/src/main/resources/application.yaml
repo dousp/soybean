@@ -1,9 +1,11 @@
 
+uaa:
+  signing-key: uaa
 spring:
   application:
     name: soy-uaa
-#  datasource:
-#    url: jdbc:mysql://localhost:3306/user_db?useUnicode=true
-#    username: sdd
-#    password: dsa
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/soy?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
