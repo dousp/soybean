@@ -17,8 +17,6 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 import javax.annotation.Resource;
 
@@ -40,29 +38,8 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
     private PasswordEncoder passwordEncoder;
     @Resource
     private ClientDetailsService clientDetailsService;
-
-
-    private final String SIGNING_KEY = "uaa123";
-
-
-    /**
-     * 令牌存储方式
-     */
-    @Bean
-    public TokenStore tokenStore() {
-        //使用内存存储令牌（普通令牌）
-        return new InMemoryTokenStore();
-        // jwt store
-        // return new JwtTokenStore(accessTokenConverter());
-    }
-
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        //对称秘钥，资源服务器使用该秘钥来验证
-        converter.setSigningKey(SIGNING_KEY);
-        return converter;
-    }
+    @Resource
+    TokenStore tokenStore;
 
 
     /**
@@ -74,7 +51,7 @@ public class AuthorizationServerConf extends AuthorizationServerConfigurerAdapte
         DefaultTokenServices service=new DefaultTokenServices();
         service.setClientDetailsService(clientDetailsService);// 客户端详情服务
         service.setSupportRefreshToken(true);// 支持刷新令牌
-        service.setTokenStore(tokenStore());// 令牌存储策略
+        service.setTokenStore(tokenStore);// 令牌存储策略
         //令牌增强
         // TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         // tokenEnhancerChain.setTokenEnhancers(Collections.singletonList(accessTokenConverter()));

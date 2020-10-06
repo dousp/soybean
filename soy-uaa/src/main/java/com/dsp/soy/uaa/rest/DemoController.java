@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DemoController {
 
     @GetMapping(value = "/r1")
-    @PreAuthorize("hasAuthority('p3')")//拥有p1权限方可访问此url
+    @PreAuthorize("hasAuthority('p2')")//拥有p1权限方可访问此url
     public Object r1(){
         //获取用户身份信息
         return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
