@@ -1,6 +1,6 @@
 package com.dsp.soy.code.gen.entity;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 
 public class Home {
@@ -19,7 +19,9 @@ public class Home {
     // 路由路径，controller等路径标识
     private String rootPath;
     // 实体类相关字段
-    private ArrayList<Member>  members;
+    private List<Member> members;
+    // 文件名后缀
+    private String suffix = "java";
 
 
     @Override
@@ -33,6 +35,7 @@ public class Home {
                 .add("comment='" + comment + "'")
                 .add("rootPath='" + rootPath + "'")
                 .add("members=" + members)
+                .add("suffix=" + suffix)
                 .toString();
     }
 
@@ -81,11 +84,11 @@ public class Home {
         return this;
     }
 
-    public ArrayList<Member> getMembers() {
+    public List<Member> getMembers() {
         return members;
     }
 
-    public Home setMembers(ArrayList<Member> members) {
+    public Home setMembers(List<Member> members) {
         this.members = members;
         return this;
     }
@@ -105,6 +108,15 @@ public class Home {
 
     public Home setAuthor(String author) {
         this.author = author;
+        return this;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public Home setSuffix(String suffix) {
+        this.suffix = suffix;
         return this;
     }
 }

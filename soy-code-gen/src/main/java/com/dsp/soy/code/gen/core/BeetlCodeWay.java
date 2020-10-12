@@ -1,4 +1,4 @@
-package com.dsp.soy.code.gen.service;
+package com.dsp.soy.code.gen.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -6,28 +6,28 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class BeetlWay implements Way {
+public class BeetlCodeWay implements CodeWay {
 
     private String targetPath;
 
     @Override
-    public void flush(Gen gen, String content) {
+    public void flush(CodeGen gen, String content) {
         String target = "";
         System.out.println("rootPath: " + getRootPath());
         target = getRootPath() + File.separator + "build" + File.separator + "gen" + File.separator + gen.getFileName();
-        write(target,content,"UTF-8");
+        write(target, content, "UTF-8");
     }
 
-    protected static void write(String path, String content, String encoding){
+    protected static void write(String path, String content, String encoding) {
         File file = new File(path);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
         // file.delete();
         // file.createNewFile();
-        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding))){
+        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), encoding))) {
             writer.write(content);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -60,7 +60,7 @@ public class BeetlWay implements Way {
         return targetPath;
     }
 
-    public BeetlWay setTargetPath(String targetPath) {
+    public BeetlCodeWay setTargetPath(String targetPath) {
         this.targetPath = targetPath;
         return this;
     }

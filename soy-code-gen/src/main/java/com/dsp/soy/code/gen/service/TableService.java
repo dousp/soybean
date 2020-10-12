@@ -1,10 +1,10 @@
-package com.dsp.soy.code.gen.dao;
+package com.dsp.soy.code.gen.service;
 
 import com.dsp.soy.code.gen.entity.Member;
 
 import java.util.List;
 
-public interface TableDao {
+public interface TableService {
 
     List<Member> getAllColumns(String tableSchema, String tableName);
 }

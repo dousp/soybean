@@ -14,6 +14,10 @@ public class Member {
     private String displayName;
     // java类型
     private String javaType;
+    // jdbc类型
+    private String jdbcType;
+    // 位置
+    private Integer position;
     // 其他注释
     private String comment;
 
@@ -25,6 +29,8 @@ public class Member {
                 .add("colName='" + colName + "'")
                 .add("displayName='" + displayName + "'")
                 .add("javaType='" + javaType + "'")
+                .add("jdbcType='" + jdbcType + "'")
+                .add("position='" + position + "'")
                 .add("comment='" + comment + "'")
                 .toString();
     }
@@ -80,6 +86,24 @@ public class Member {
 
     public Member setComment(String comment) {
         this.comment = comment;
+        return this;
+    }
+
+    public String getJdbcType() {
+        return jdbcType;
+    }
+
+    public Member setJdbcType(String jdbcType) {
+        this.jdbcType = jdbcType;
+        return this;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public Member setPosition(Integer position) {
+        this.position = position;
         return this;
     }
 }
