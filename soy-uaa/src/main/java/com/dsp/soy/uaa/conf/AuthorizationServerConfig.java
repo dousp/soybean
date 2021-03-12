@@ -1,5 +1,10 @@
 package com.dsp.soy.uaa.conf;
 
+import com.dsp.soy.uaa.exception.oauth.UaaAccessDeniedHandler;
+import com.dsp.soy.uaa.exception.oauth.UaaAuthExceptionEntryPoint;
+import com.dsp.soy.uaa.exception.oauth.UaaWebResponseExceptionTranslator;
+import com.dsp.soy.uaa.filter.UaaClientCredentialsTokenEndpointFilter;
+import com.dsp.soy.uaa.model.User;
 import com.dsp.soy.uaa.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -15,20 +21,17 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
-import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.*;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.security.KeyPair;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author dsp
@@ -49,7 +52,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     PasswordEncoder passwordEncoder;
     @Resource
     UserDetailServiceImpl userDetailService;
-
+    @Resource
+    UaaWebResponseExceptionTranslator uaaWebResponseExceptionTranslator;
+    @Resource
+    UaaAccessDeniedHandler uaaAccessDeniedHandler;
+    @Resource
+    UaaAuthExceptionEntryPoint uaaAuthExceptionEntryPoint;
 
     /**
      * 客户端详情服务
@@ -75,12 +83,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .userDetailsService(userDetailService)
                 // 认证管理器
                 .authenticationManager(authenticationManager)
-                // 授权码服务
-                .authorizationCodeServices(authorizationCodeServices())
-                // 令牌管理服务
                 .tokenServices(authorizationServerTokenServices())
+                // 允许使用post请求获取token
                 .allowedTokenEndpointRequestMethods(HttpMethod.POST)
-                // .setClientDetailsService(myClientDetailsService())
+                .exceptionTranslator(uaaWebResponseExceptionTranslator)
+                .setClientDetailsService(myClientDetailsService())
         ;
     }
 
@@ -89,14 +96,39 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) {
+        UaaClientCredentialsTokenEndpointFilter filter = new UaaClientCredentialsTokenEndpointFilter(security);
+        filter.afterPropertiesSet();
+        filter.setAuthenticationEntryPoint(uaaAuthExceptionEntryPoint);
         security
-                // oauth/token_key是公开
+                // oauth/token_key公开
                 .tokenKeyAccess("permitAll()")
                 // oauth/check_token公开
                 .checkTokenAccess("permitAll()")
-                // 表单认证（申请令牌）
-                .allowFormAuthenticationForClients()
+                .accessDeniedHandler(uaaAccessDeniedHandler)
+                // 表单认证（申请令牌）,会默认添加系统自带的ClientCredentialsTokenEndpointFilter
+                // 导致自定义的UaaClientCredentialsTokenEndpointFilter失效
+                // 自定义的filter优先级在系统自带filter之后
+                // .allowFormAuthenticationForClients()
+                .addTokenEndpointAuthenticationFilter(filter)
         ;
+
+    }
+
+    /**
+     * 令牌管理服务
+     */
+    @Bean
+    public AuthorizationServerTokenServices authorizationServerTokenServices() {
+        DefaultTokenServices service = new DefaultTokenServices();
+        // 令牌默认有效期2小时
+        service.setAccessTokenValiditySeconds(7200);
+        // 刷新令牌默认有效期3天
+        service.setRefreshTokenValiditySeconds(259200);
+        service.setSupportRefreshToken(true);
+        service.setReuseRefreshToken(true);
+        service.setTokenStore(tokenStore());
+        service.setTokenEnhancer(tokenEnhancerChain());
+        return service;
     }
 
     /**
@@ -104,7 +136,32 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      */
     @Bean
     public TokenStore tokenStore() {
-        return new JwtTokenStore(accessTokenConverter());
+        // return new JwtTokenStore(accessTokenConverter());
+        return new JdbcTokenStore(dataSource);
+    }
+
+    /**
+     * token增强
+     */
+    @Bean
+    public TokenEnhancerChain tokenEnhancerChain() {
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), jwtAccessTokenConverter()));
+        return tokenEnhancerChain;
+    }
+
+    /**
+     * JWT内容增强
+     */
+    @Bean
+    public TokenEnhancer tokenEnhancer() {
+        return (accessToken, authentication) -> {
+            Map<String, Object> map = new HashMap<>(2);
+            User user = (User) authentication.getUserAuthentication().getPrincipal();
+            map.put("userId", user.getId());
+            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(map);
+            return accessToken;
+        };
     }
 
     /**
@@ -112,21 +169,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
      * 授予令牌时，还充当TokenEnhancer
      */
     @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        //对称秘钥，资源服务器使用该秘钥来验证
-        converter.setSigningKey(signingKey);
+        // 对称秘钥，资源服务器使用该秘钥来验证
+        // converter.setSigningKey(signingKey);
+        // 非对称秘钥
+        converter.setKeyPair(keyPair());
         return converter;
-    }
-
-    /**
-     * token增强
-     */
-    @Bean
-    public TokenEnhancerChain tokenEnhancerChain(){
-        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(Collections.singletonList(accessTokenConverter()));
-        return tokenEnhancerChain;
     }
 
     /**
@@ -140,42 +189,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     /**
-     * 授权码模式的授权码存储到数据库
-     */
-    @Bean
-    public AuthorizationCodeServices authorizationCodeServices() {
-        return new JdbcAuthorizationCodeServices(dataSource);
-    }
-
-    /**
-     * 令牌管理服务
-     */
-    @Bean
-    public AuthorizationServerTokenServices authorizationServerTokenServices() {
-        DefaultTokenServices service = new DefaultTokenServices();
-        // 令牌默认有效期2小时
-        service.setAccessTokenValiditySeconds(7200);
-        // 刷新令牌默认有效期3天
-        service.setRefreshTokenValiditySeconds(259200);
-        // 支持刷新令牌
-        // service.setSupportRefreshToken(true);
-        // 设置endpoints的配置重复
-        service.setReuseRefreshToken(true);
-        service.setTokenStore(tokenStore());
-        service.setTokenEnhancer(tokenEnhancerChain());
-        // service.setAuthenticationManager(authenticationManager);
-        // service.setClientDetailsService(myClientDetailsService());
-        return service;
-    }
-
-    /**
      * 从classpath下的密钥库中获取密钥对(公钥+私钥)
      */
     @Bean
     public KeyPair keyPair() {
         KeyStoreKeyFactory factory = new KeyStoreKeyFactory(
-                new ClassPathResource("oauth2.jks"), "123456".toCharArray());
-        return factory.getKeyPair("oauth2", "123456".toCharArray());
+                new ClassPathResource("oauth2.jks"), signingKey.toCharArray());
+        return factory.getKeyPair("oauth2", signingKey.toCharArray());
     }
 
 

@@ -3,6 +3,16 @@
     {
       "name": "uaa.signing-key",
       "type": "java.lang.String",
-      "description": "对称秘钥，解密key."
-  }
-] }
+      "description": "解密key."
+    },
+    {
+      "name": "uaa.security.oauth.login-processing-url",
+      "type": "java.lang.String",
+      "description": "登录页面."
+    },
+    {
+      "name": "uaa.security.oauth.login-page",
+      "type": "java.lang.String",
+      "description": "登录页面."
+    }
+  ] }

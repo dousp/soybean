@@ -1,5 +1,9 @@
 uaa:
-  signing-key: uaa
+  signing-key: 123456
+  security:
+    oauth:
+      login-page: /oauth/login
+      login-processing-url: /oauth/login
 
 logging:
   level:
@@ -11,7 +15,7 @@ spring:
   application:
     name: soy-uaa
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/soy?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/soy?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
