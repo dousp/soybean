@@ -61,6 +61,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     /**
      * 客户端详情服务
+     * 授权类型，"authorization_code","password","client_credentials","implicit","refresh_token"
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {

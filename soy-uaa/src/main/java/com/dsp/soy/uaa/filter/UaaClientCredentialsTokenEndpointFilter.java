@@ -6,8 +6,9 @@ import org.springframework.security.oauth2.provider.client.ClientCredentialsToke
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 /**
- * 重写filter实现客户端自定义异常处理
- * 与ClientCredentialsTokenEndpointFilter一样支持表单认证
+ * 替换系统自带的ClientCredentialsTokenEndpointFilter
+ * 实现客户端自定义异常处理
+ * 注意，源码ClientCredentialsTokenEndpointFilter是支持form认证的过滤器，在开启allowFormAuthenticationForClients后添加的
  */
 public class UaaClientCredentialsTokenEndpointFilter extends ClientCredentialsTokenEndpointFilter {
 
