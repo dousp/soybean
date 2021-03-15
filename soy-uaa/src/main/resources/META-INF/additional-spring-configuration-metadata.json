@@ -1,7 +1,7 @@
 {
   "properties": [
     {
-      "name": "uaa.signing-key",
+      "name": "uaa.security.oauth.signing-key",
       "type": "java.lang.String",
       "description": "解密key."
     },
@@ -14,5 +14,26 @@
       "name": "uaa.security.oauth.login-page",
       "type": "java.lang.String",
       "description": "登录页面."
+    },
+    {
+      "name": "uaa.security.oauth.access-token-validity-minutes",
+      "type": "java.lang.String",
+      "description": "token有效期."
+    },
+    {
+      "name": "uaa.security.oauth.refresh-token-validity-minutes",
+      "type": "java.lang.String",
+      "description": "刷新token有效期."
+    },
+    {
+      "name": "uaa.security.oauth.key-alias",
+      "type": "java.lang.String",
+      "description": "keyPair alias."
+    },
+    {
+      "name": "uaa.security.oauth.key-name",
+      "type": "java.lang.String",
+      "description": "keyPair name."
     }
+
   ] }

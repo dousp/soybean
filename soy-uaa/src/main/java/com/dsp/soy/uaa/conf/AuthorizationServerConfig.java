@@ -6,7 +6,6 @@ import com.dsp.soy.uaa.exception.oauth.UaaWebResponseExceptionTranslator;
 import com.dsp.soy.uaa.filter.UaaClientCredentialsTokenEndpointFilter;
 import com.dsp.soy.uaa.model.User;
 import com.dsp.soy.uaa.service.UserDetailServiceImpl;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -32,6 +31,7 @@ import java.security.KeyPair;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author dsp
@@ -41,15 +41,12 @@ import java.util.Map;
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-    @Value("${uaa.signing-key}")
-    private String signingKey;
-
+    @Resource
+    SecurityProperties securityProperties;
     @Resource
     DataSource dataSource;
     @Resource
     AuthenticationManager authenticationManager;
-    @Resource
-    PasswordEncoder passwordEncoder;
     @Resource
     UserDetailServiceImpl userDetailService;
     @Resource
@@ -58,6 +55,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     UaaAccessDeniedHandler uaaAccessDeniedHandler;
     @Resource
     UaaAuthExceptionEntryPoint uaaAuthExceptionEntryPoint;
+    @Resource
+    PasswordEncoder passwordEncoder;
+
 
     /**
      * 客户端详情服务
@@ -84,13 +84,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .userDetailsService(userDetailService)
                 // 认证管理器
                 .authenticationManager(authenticationManager)
+                // 令牌管理服务
                 .tokenServices(authorizationServerTokenServices())
                 // 允许使用post请求获取token
                 .allowedTokenEndpointRequestMethods(HttpMethod.POST)
                 // refresh_token使用一次后失效
                 .reuseRefreshTokens(false)
                 .exceptionTranslator(uaaWebResponseExceptionTranslator)
-                .setClientDetailsService(myClientDetailsService())
         ;
     }
 
@@ -123,23 +123,21 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Bean
     public AuthorizationServerTokenServices authorizationServerTokenServices() {
         DefaultTokenServices service = new DefaultTokenServices();
-        // 令牌默认有效期2小时
-        service.setAccessTokenValiditySeconds(7200);
-        // 刷新令牌默认有效期3天
-        service.setRefreshTokenValiditySeconds(259200);
         service.setSupportRefreshToken(true);
-        service.setReuseRefreshToken(true);
         service.setTokenStore(tokenStore());
         service.setTokenEnhancer(tokenEnhancerChain());
+        // 刷新令牌默认有效期
+        service.setRefreshTokenValiditySeconds((int) TimeUnit.MINUTES.toSeconds(securityProperties.getAccessTokenValidityMinutes()));
+        // 令牌默认有效期
+        service.setAccessTokenValiditySeconds((int) TimeUnit.MINUTES.toSeconds(securityProperties.getAccessTokenValidityMinutes()));
         return service;
     }
 
     /**
-     * 令牌存储方式
+     * 令牌存储方式 : JdbcTokenStore
      */
     @Bean
     public TokenStore tokenStore() {
-        // return new JwtTokenStore(accessTokenConverter());
         return new JdbcTokenStore(dataSource);
     }
 
@@ -197,8 +195,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Bean
     public KeyPair keyPair() {
         KeyStoreKeyFactory factory = new KeyStoreKeyFactory(
-                new ClassPathResource("oauth2.jks"), signingKey.toCharArray());
-        return factory.getKeyPair("oauth2", signingKey.toCharArray());
+                new ClassPathResource(securityProperties.getKeyName()), securityProperties.getSigningKey().toCharArray());
+        return factory.getKeyPair(securityProperties.getKeyAlias(), securityProperties.getSigningKey().toCharArray());
     }
 
 

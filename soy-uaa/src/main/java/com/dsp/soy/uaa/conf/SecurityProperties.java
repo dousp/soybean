@@ -1,6 +1,7 @@
 package com.dsp.soy.uaa.conf;
 
 import lombok.Data;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,5 +20,18 @@ public class SecurityProperties {
     private String usernameParameterName = "username";
 
     private String passwordParameterName = "password";
+
+    /**
+     * token 有效期， 分钟为单位
+     */
+    private Long accessTokenValidityMinutes = 30L;
+
+    private Long refreshTokenValidityMinutes = 180L;
+
+    private String signingKey;
+
+    private String keyAlias;
+
+    private String keyName;
 
 }

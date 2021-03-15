@@ -1,9 +1,13 @@
 uaa:
-  signing-key: 123456
   security:
     oauth:
+      key-alias: oauth2
+      key-name: oauth2.jks
+      signing-key: 123456
       login-page: /oauth/login
       login-processing-url: /oauth/login
+      access-token-validity-minutes: 60
+      refresh-token-validity-minutes: 1440
 
 logging:
   level:
