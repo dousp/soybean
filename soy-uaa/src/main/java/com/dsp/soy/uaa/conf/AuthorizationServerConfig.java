@@ -87,6 +87,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .tokenServices(authorizationServerTokenServices())
                 // 允许使用post请求获取token
                 .allowedTokenEndpointRequestMethods(HttpMethod.POST)
+                // refresh_token使用一次后失效
+                .reuseRefreshTokens(false)
                 .exceptionTranslator(uaaWebResponseExceptionTranslator)
                 .setClientDetailsService(myClientDetailsService())
         ;
