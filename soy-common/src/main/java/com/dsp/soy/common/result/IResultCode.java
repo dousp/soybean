@@ -1,4 +1,4 @@
-package com.dsp.soy.uaa.common;
+package com.dsp.soy.common.result;
 
 public interface IResultCode {
 

@@ -1,8 +1,8 @@
 package com.dsp.soy.uaa.exception;
 
 import com.alibaba.fastjson.JSON;
-import com.dsp.soy.uaa.common.Result;
-import com.dsp.soy.uaa.common.ResultCode;
+import com.dsp.soy.common.result.Result;
+import com.dsp.soy.common.result.ResultCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
