@@ -1,4 +1,4 @@
-package com.dsp.soy.uaa.exception.oauth;
+package com.dsp.soy.uaa.exception;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

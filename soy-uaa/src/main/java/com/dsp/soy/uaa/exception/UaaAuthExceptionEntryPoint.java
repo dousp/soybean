@@ -1,4 +1,4 @@
-package com.dsp.soy.uaa.exception.oauth;
+package com.dsp.soy.uaa.exception;
 
 import com.alibaba.fastjson.JSON;
 import com.dsp.soy.uaa.common.Result;

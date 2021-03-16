@@ -1,16 +1,21 @@
 package com.dsp.soy.uaa.conf;
 
-import com.dsp.soy.uaa.exception.oauth.UaaAccessDeniedHandler;
-import com.dsp.soy.uaa.exception.oauth.UaaAuthExceptionEntryPoint;
-import com.dsp.soy.uaa.exception.oauth.UaaWebResponseExceptionTranslator;
+import com.dsp.soy.uaa.exception.UaaAccessDeniedHandler;
+import com.dsp.soy.uaa.exception.UaaAuthExceptionEntryPoint;
+import com.dsp.soy.uaa.exception.UaaWebResponseExceptionTranslator;
 import com.dsp.soy.uaa.filter.UaaClientCredentialsTokenEndpointFilter;
+import com.dsp.soy.uaa.grant.EmailTokenGranter;
+import com.dsp.soy.uaa.grant.SmsTokenGranter;
 import com.dsp.soy.uaa.model.User;
+import com.dsp.soy.uaa.service.EmailUserDetailsService;
+import com.dsp.soy.uaa.service.SmsUserDetailsService;
 import com.dsp.soy.uaa.service.UserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -18,7 +23,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.CompositeTokenGranter;
+import org.springframework.security.oauth2.provider.TokenGranter;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
@@ -28,9 +34,7 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.security.KeyPair;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,7 +52,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Resource
     AuthenticationManager authenticationManager;
     @Resource
-    UserDetailServiceImpl userDetailService;
+    SmsUserDetailsService smsUserDetailsService;
+    @Resource
+    EmailUserDetailsService emailUserDetailsService;
     @Resource
     UaaWebResponseExceptionTranslator uaaWebResponseExceptionTranslator;
     @Resource
@@ -56,16 +62,20 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Resource
     UaaAuthExceptionEntryPoint uaaAuthExceptionEntryPoint;
     @Resource
-    PasswordEncoder passwordEncoder;
+    UserDetailServiceImpl userDetailService;
 
 
     /**
      * 客户端详情服务
+     * 客户端信息存储到数据库
      * 授权类型，"authorization_code","password","client_credentials","implicit","refresh_token"
+     * 如果需要启用password授权模式，需要特别为AuthorizationServerEndpointsConfigurer提供AuthenticationManager
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.withClientDetails(myClientDetailsService());
+        JdbcClientDetailsService jdbcClientDetailsService = new JdbcClientDetailsService(dataSource);
+        jdbcClientDetailsService.setPasswordEncoder(passwordEncoder());
+        clients.withClientDetails(jdbcClientDetailsService);
     }
 
     /**
@@ -87,9 +97,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 // 令牌管理服务
                 .tokenServices(authorizationServerTokenServices())
                 // 允许使用post请求获取token
-                .allowedTokenEndpointRequestMethods(HttpMethod.POST)
-                // refresh_token使用一次后失效
-                .reuseRefreshTokens(false)
+                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
                 .exceptionTranslator(uaaWebResponseExceptionTranslator)
         ;
     }
@@ -124,6 +132,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public AuthorizationServerTokenServices authorizationServerTokenServices() {
         DefaultTokenServices service = new DefaultTokenServices();
         service.setSupportRefreshToken(true);
+        // refresh_token使用一次后失效
+        service.setReuseRefreshToken(false);
         service.setTokenStore(tokenStore());
         service.setTokenEnhancer(tokenEnhancerChain());
         // 刷新令牌默认有效期
@@ -180,16 +190,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     /**
-     * 客户端信息存储到数据库
-     */
-    @Bean
-    public ClientDetailsService myClientDetailsService() {
-        JdbcClientDetailsService jdbcClientDetailsService = new JdbcClientDetailsService(dataSource);
-        jdbcClientDetailsService.setPasswordEncoder(passwordEncoder);
-        return jdbcClientDetailsService;
-    }
-
-    /**
      * 从classpath下的密钥库中获取密钥对(公钥+私钥)
      */
     @Bean
@@ -199,5 +199,28 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         return factory.getKeyPair(securityProperties.getKeyAlias(), securityProperties.getSigningKey().toCharArray());
     }
 
+    /**
+     * 密码编码器
+     * 声明bean后，这个会默认应用到用户密码校验上
+     * 也可以通过AuthenticationManagerBuilder自定义
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
+    /**
+     * 先获取已经有的五种授权，然后添加我们自己的进去
+     *
+     * @param endpoints AuthorizationServerEndpointsConfigurer
+     * @return TokenGranter
+     */
+    private TokenGranter tokenGranter(final AuthorizationServerEndpointsConfigurer endpoints) {
+        List<TokenGranter> granters = new ArrayList<>(Collections.singletonList(endpoints.getTokenGranter()));
+        granters.add(new SmsTokenGranter(endpoints.getTokenServices(), endpoints.getClientDetailsService(),
+                endpoints.getOAuth2RequestFactory(), smsUserDetailsService));
+        granters.add(new EmailTokenGranter(endpoints.getTokenServices(), endpoints.getClientDetailsService(),
+                endpoints.getOAuth2RequestFactory(), emailUserDetailsService));
+        return new CompositeTokenGranter(granters);
+    }
 }

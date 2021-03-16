@@ -1,5 +1,6 @@
 package com.dsp.soy.uaa.service;
 
+import com.dsp.soy.uaa.exception.ResourceNotFoundException;
 import com.dsp.soy.uaa.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AccountExpiredException;
@@ -9,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -22,19 +22,46 @@ import java.util.Arrays;
  */
 @Component
 @Slf4j
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService,SmsUserDetailsService, EmailUserDetailsService  {
 
     @Resource
     private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.loadUser(username,"account");
+    }
+
+    @Override
+    public UserDetails loadUserByEmail(String email) throws ResourceNotFoundException {
+        return this.loadUser(email,"email");
+    }
+
+    @Override
+    public UserDetails loadUserBySms(String sms) throws ResourceNotFoundException {
+        return this.loadUser(sms,"sms");
+    }
+
+    public User loadUser(String account, String type){
+        switch (type){
+            case "account":
+                log.info("account...");
+                break;
+            case "email":
+                log.info("email...");
+                break;
+            case "sms":
+                log.info("sms...");
+                break;
+            default:
+                break;
+        }
         User user = new User();
-        if(username.equals("dd")){
+        if(account.equals("dd")){
             user.setId(100L);
             user.setMobile("185");
             user.setUsername("dd");
-            user.setPassword("$2a$10$pWhkoU/NjtDk41DpfI2EaedP4W3jM8GX7a1sUEY6tIMavKduTq7kO");
+            user.setPassword("$2a$10$Z9NrjKn8DG9Z0UvqI62tJeATJrjj8FlPdCYgPZWlvFHYjtiXuXIia");
             user.setAuthorities(Arrays.asList(new SimpleGrantedAuthority("p1"),new SimpleGrantedAuthority("p3")));
             log.info("账号dd验证通过...");
             return user;
@@ -51,9 +78,4 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return null;
     }
 
-    public static void main(String[] args) {
-        // String password = new BCryptPasswordEncoder().encode("secret");
-        String password = new BCryptPasswordEncoder().encode("dd");
-        System.out.println(password);
-    }
 }
