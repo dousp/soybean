@@ -8,6 +8,6 @@ ext {
     lib = [
         fastjson : "com.alibaba:fastjson:1.2.75"
     ]
-    springCloudVersion = '2020.0.1'
+    springCloudVersion = '2020.0.2'
     springCloudAlibabaVersion = '2.2.5.RELEASE'
 }
