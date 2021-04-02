@@ -5,7 +5,6 @@
 
 ## 命令
 
-- 独立模式 
-
+- 独立模式
 
     `sh startup.sh -m standalone`
