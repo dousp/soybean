@@ -14,5 +14,15 @@
       "name": "black-list.urls",
       "type": "java.lang.String",
       "description": "黑名单."
+    },
+    {
+      "name": "sys.path-pattern.admin",
+      "type": "java.lang.String",
+      "description": "系统管理路径."
+    },
+    {
+      "name": "sys.path-pattern.logout",
+      "type": "java.lang.String",
+      "description": "系统登出路径."
     }
   ] }

@@ -3,6 +3,7 @@ package com.dsp.soy.route.security;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import com.dsp.soy.common.constant.AuthConstants;
+import com.dsp.soy.route.conf.SystemPathPatternConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpMethod;
@@ -25,13 +26,20 @@ import java.util.Map;
 
 /**
  * 权限验证
+ * 1.对后台管理端请求进行权限验证
+ * 2.对非后台管理端请求只验证其是否有token，token解析放到{@link com.dsp.soy.route.filter.AuthGlobalFilter}
+ * 3.token在发放时已经附带权限信息，但是要保障权限变动时token要失效或自动刷新token同时更新权限信息
  */
 @Component
 @Slf4j
 public class AuthorizationManager implements ReactiveAuthorizationManager<AuthorizationContext> {
 
     @Resource
+    SystemPathPatternConfig systemPathPatternConfig;
+    @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    private final PathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     public Mono<AuthorizationDecision> check(Mono<Authentication> mono, AuthorizationContext authorizationContext) {
@@ -43,7 +51,6 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
             return Mono.just(new AuthorizationDecision(true));
         }
 
-        PathMatcher pathMatcher = new AntPathMatcher();
         String path = request.getURI().getPath();
         String method = request.getMethodValue();
         log.info("request：{} {}", method,path);
@@ -55,9 +62,9 @@ public class AuthorizationManager implements ReactiveAuthorizationManager<Author
             return Mono.just(new AuthorizationDecision(false));
         }
 
-        // 非管理端路径无需鉴权直接放行
-        if (!pathMatcher.match(AuthConstants.ADMIN_URL_PATTERN, path)) {
-            log.info("request：{} {}，请求无需鉴权", method,path);
+        // 请求来自非管理端（soy-admin）路径无需鉴权直接放行
+        if (!pathMatcher.match(systemPathPatternConfig.getAdmin(), path)) {
+            log.info("request：{} {}，非管理端请求无需鉴权", method,path);
             return Mono.just(new AuthorizationDecision(true));
         }
 

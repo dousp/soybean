@@ -34,9 +34,13 @@ public interface AuthConstants {
      * JWT存储权限属性
      */
     String JWT_AUTHORITIES_KEY = "authorities";
-
+    /**
+     * 授权类型
+     */
     String GRANT_TYPE_KEY = "grant_type";
-
+    /**
+     * 刷新令牌
+     */
     String REFRESH_TOKEN = "refresh_token";
     /**
      * Redis缓存权限规则key
@@ -46,12 +50,4 @@ public interface AuthConstants {
      * 黑名单token前缀
      */
     String TOKEN_BLACKLIST_PREFIX = "auth:token:blacklist:";
-    /**
-     * 后台管理接口路径匹配
-     */
-    String ADMIN_URL_PATTERN = "**/soy-admin/**";
-    /**
-     * 后台管理接口路径匹配
-     */
-    String LOGOUT_PATH = "/soy-auth/oauth/logout";
 }

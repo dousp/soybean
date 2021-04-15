@@ -6,6 +6,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.dsp.soy.common.constant.AuthConstants;
 import com.dsp.soy.common.result.ResultCode;
+import com.dsp.soy.route.conf.SystemPathPatternConfig;
 import com.dsp.soy.route.util.WebUtils;
 import com.nimbusds.jose.JWSObject;
 import lombok.SneakyThrows;
@@ -38,6 +39,8 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
     // 是否演示环境
     @Value("${sys.demo}")
     private Boolean isDemoEnvironment;
+    @Resource
+    SystemPathPatternConfig systemPathPatternConfig;
 
     @SneakyThrows
     @Override
@@ -48,7 +51,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
 
         // 演示环境禁止删除和修改，删除方法、logout注销不禁止
         if (isDemoEnvironment && HttpMethod.DELETE.toString().equals(request.getMethodValue())
-                && !AuthConstants.LOGOUT_PATH.equals(request.getPath().value())) {
+                && !systemPathPatternConfig.getLogout().equals(request.getPath().value())) {
             return WebUtils.writeFailedToResponse(response, ResultCode.FORBIDDEN_OPERATION);
         }
 

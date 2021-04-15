@@ -2,6 +2,10 @@ server:
   port: 9071
 sys:
   demo: false
+  path-pattern:
+    admin: '**/soy-admin/**'
+    logout: '/soy-auth/oauth/logout'
+    
 spring:
   application:
     name: soy-route
