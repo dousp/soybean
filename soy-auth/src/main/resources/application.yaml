@@ -1,0 +1,12 @@
+server:
+  port: 9072
+spring:
+  application:
+    name: soy-auth
+  profiles:
+    active: dev
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

@@ -1,18 +1,18 @@
 server:
-  port: 8071
+  port: 9071
+sys:
+  demo: false
 spring:
   application:
-    name: route
+    name: soy-route
   profiles:
     active: dev
 
-#logging:
-#  level:
-#    org.springframework.cloud.gateway: TRACE
-#    org.springframework.http.server.reactive: DEBUG
-#    org.springframework.web.reactive: DEBUG
-#    reactor.ipc.netty: DEBUG
-#    reactor.netty: DEBUG
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
 
 #management:
 #  endpoints:

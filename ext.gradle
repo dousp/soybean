@@ -1,6 +1,6 @@
 
-// ext['springCloudVersion'] = '2020.0.1'
-// ext['springCloudAlibabaVersion'] = '2.2.5.RELEASE'
+ext['springCloudVersion'] = '2020.0.2'
+ext['springCloudAlibabaVersion'] = '2.2.5.RELEASE'
 ext['spring-security.version'] = '5.4.5'
 ext['spring-security-oauth2-autoconfigure.version'] = '2.4.2'
 
@@ -8,6 +8,4 @@ ext {
     lib = [
         fastjson : "com.alibaba:fastjson:1.2.75"
     ]
-    springCloudVersion = '2020.0.2'
-    springCloudAlibabaVersion = '2.2.5.RELEASE'
 }

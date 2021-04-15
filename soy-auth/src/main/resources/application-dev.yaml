@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/soy?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    ssl: false
+    timeout: 3000
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: b8cb24a7-9551-48d2-86d3-12051a78453a
+        group: ${spring.profiles.active}
+uaa:
+  security:
+    oauth:
+      key-alias: oauth2
+      key-name: oauth2.jks
+      signing-key: 123456
+      login-page: /oauth/login
+      login-processing-url: /oauth/login
+      access-token-validity-minutes: 60
+      refresh-token-validity-minutes: 1440

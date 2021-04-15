@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "sys.demo",
+      "type": "java.lang.String",
+      "description": "系统是否演示模式."
+    },
+    {
+      "name": "white-list.urls",
+      "type": "java.lang.String",
+      "description": "权限验证的白名单，在此列表中的请求不会做权限验证."
+    },
+    {
+      "name": "black-list.urls",
+      "type": "java.lang.String",
+      "description": "黑名单."
+    }
+  ] }

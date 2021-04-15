@@ -1,0 +1,27 @@
+dependencies {
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+	api project(':soy-common')
+	implementation group: 'com.alibaba.cloud', name: 'spring-cloud-starter-alibaba-nacos-discovery'
+	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.21'
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jdbc'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-core'
+	implementation group: 'org.springframework.security', name: 'spring-security-oauth2-jose'
+	implementation group: 'org.springframework.security.oauth.boot', name: 'spring-security-oauth2-autoconfigure'
+	// implementation group: 'org.springframework.security', name: 'spring-security-config'
+	// implementation group: 'org.springframework.security', name: 'spring-security-web'
+	// implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-security'
+	// implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-oauth2'
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
