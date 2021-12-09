@@ -15,7 +15,7 @@ public class TableServiceTest {
     TableService tableService;
 
 
-    @Test
+    // @Test
     public void queryAllColumns(){
         List<Member> memberList = tableService.getAllColumns("tjdb1","rbac_role");
         memberList.forEach(e-> System.out.println(e.toString()));

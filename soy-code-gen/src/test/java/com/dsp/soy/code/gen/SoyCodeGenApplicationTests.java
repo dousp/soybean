@@ -27,7 +27,7 @@ class SoyCodeGenApplicationTests {
     @Resource
     TableService tableService;
 
-    @Test
+    // @Test
     void contextLoads() {
         Template t = groupTemplate.getTemplate("demo/demo2.tpl");
         t.binding("name", "Dou");
@@ -35,7 +35,7 @@ class SoyCodeGenApplicationTests {
         System.out.println(str);
     }
 
-    @Test
+    // @Test
     void testTpl() throws IOException {
         ClasspathResourceLoader resourceLoader = new ClasspathResourceLoader("templates");
         Configuration cfg = Configuration.defaultConfiguration();
@@ -46,7 +46,7 @@ class SoyCodeGenApplicationTests {
         System.out.println(str);
     }
 
-    @Test
+    // @Test
     void testUpper() {
         System.out.println(CamelNameUtil.toFirstLower("Class"));
         System.out.println(CamelNameUtil.toFirstUpper("Class"));
@@ -55,7 +55,7 @@ class SoyCodeGenApplicationTests {
         System.out.println(CamelNameUtil.toJavaNameUpper(str.substring(str.indexOf("_"))));
     }
 
-    @Test
+    // @Test
     void encoding() {
         //获取系统默认编码
         System.out.println("系统默认编码：" + System.getProperty("file.encoding")); //查询结果GBK
@@ -65,7 +65,7 @@ class SoyCodeGenApplicationTests {
         System.out.println("系统默认语言：" + System.getProperty("user.language")); //查询结果zh
     }
 
-    @Test
+    // @Test
     public void testGen() {
 
         String tableSchema = "tjdb1";
@@ -88,7 +88,7 @@ class SoyCodeGenApplicationTests {
         home.setMembers(members);
     }
 
-    @Test
+    // @Test
     void testJavaGen2() {
 
         ArrayList<Member> members = new ArrayList<>();

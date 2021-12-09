@@ -4,6 +4,7 @@ plugins {
     id "io.freefair.lombok" version "5.3.0" apply(false)
 }
 
+
 allprojects {
 
     repositories {
@@ -22,6 +23,7 @@ allprojects {
     group 'com.dsp'
     version '1.0-SNAPSHOT'
 
+
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
@@ -30,23 +32,28 @@ allprojects {
 
 subprojects {
 
-    // apply from: "${rootProject.projectDir}/ext.gradle"
     apply plugin: 'java'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: "io.spring.dependency-management"
     apply plugin: "io.freefair.lombok"
+
+    if(project.name != 'soy-common' ){
+        println project.name + ' add plugin [org.springframework.boot]'
+        println project.name + ' add plugin [io.spring.dependency-management]'
+
+        apply plugin: 'org.springframework.boot'
+        apply plugin: "io.spring.dependency-management"
+
+        dependencyManagement {
+            imports {
+                mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+                mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
+            }
+        }
+    }
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
-
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
-        }
-    }
 
     def lib = this.rootProject.ext.lib;
 

@@ -18,10 +18,10 @@ public enum ResultCode implements IResultCode, Serializable {
 
     AUTHORIZED_ERROR("A0300", "访问权限异常"),
     ACCESS_UNAUTHORIZED("A0301", "访问未授权"),
-    FORBIDDEN_OPERATION("A0302", "READ模式禁止修改、删除重要数据，请本地部署后测试"),
+    FORBIDDEN_OPERATION("A0302", "演示模式禁止修改、删除重要数据，请本地部署后测试"),
 
-    SYSTEM_EXECUTION_ERROR("S0001", "系统内部出错"),
-    SYSTEM_EXECUTION_TIMEOUT("S0002", "系统执行超时")
+    SYSTEM_ERROR("S0001", "系统内部出错"),
+    SYSTEM_TIMEOUT("S0002", "系统执行超时")
     ;
 
     @Override
