@@ -1,41 +1,64 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.4' apply(false)
+    id 'org.springframework.boot' version '2.6.1' apply(false)
     id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply(false)
-    id "io.freefair.lombok" version "5.3.0" apply(false)
+    id "io.freefair.lombok" version "6.3.0" apply(false)
+    id 'java'
+    id 'idea'
+    id 'java-library'
 }
 
 
 allprojects {
 
     repositories {
-        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/spring' }
         maven { url 'https://maven.aliyun.com/repository/spring-plugin' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        maven { url "https://plugins.gradle.org/m2/" }
+        // maven { url "https://plugins.gradle.org/m2/" }
         mavenLocal()
+        mavenCentral()
     }
 
+    apply plugin: 'java'
     apply plugin: 'idea'
+    apply plugin: 'java-library'
+    // apply plugin: 'maven-publish'
+    apply plugin: "io.freefair.lombok"
+
     apply from: "${rootProject.projectDir}/ext.gradle"
 
     group 'com.dsp'
     version '1.0-SNAPSHOT'
 
-
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
 }
 
 subprojects {
 
-    apply plugin: 'java'
-    apply plugin: 'java-library'
-    apply plugin: 'maven-publish'
-    apply plugin: "io.freefair.lombok"
+    def lib = this.rootProject.ext.lib;
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        implementation 'com.alibaba:fastjson:1.2.79'
+        implementation 'cn.hutool:hutool-all:5.7.19'
+
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
 
     if(project.name != 'soy-common' ){
         println project.name + ' add plugin [org.springframework.boot]'
@@ -52,22 +75,8 @@ subprojects {
         }
     }
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
-    def lib = this.rootProject.ext.lib;
-
-    dependencies {
-        // implementation lib.fastjson
-        implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.76'
-        implementation group: 'cn.hutool', name: 'hutool-all', version: '5.6.3'
-
-    }
-
-    configurations {
-        compileOnly {
-            extendsFrom annotationProcessor
-        }
+    test {
+        useJUnitPlatform()
     }
 
 }
