@@ -24,7 +24,7 @@ allprojects {
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'java-library'
-    // apply plugin: 'maven-publish'
+    apply plugin: 'maven-publish'
     apply plugin: "io.freefair.lombok"
 
     apply from: "${rootProject.projectDir}/ext.gradle"
@@ -75,7 +75,10 @@ subprojects {
         }
     }
 
-    test {
+    // test {
+    //     useJUnitPlatform()
+    // }
+    tasks.named('test') {
         useJUnitPlatform()
     }
 
