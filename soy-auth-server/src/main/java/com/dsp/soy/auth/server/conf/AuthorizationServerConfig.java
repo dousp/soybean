@@ -72,12 +72,13 @@ public class AuthorizationServerConfig {
 	public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 		// 默认的话就用这个
 		// OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-
 		OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer
 				= new OAuth2AuthorizationServerConfigurer<>();
+
 		// 可以根据需求对OAuth2AuthorizationServerConfiguration进行个性化设置
 		RequestMatcher endpointsMatcher
 				= authorizationServerConfigurer.getEndpointsMatcher();
+
 		// 授权服务器相关请求端点
 		http.requestMatcher(endpointsMatcher)
 				.authorizeRequests(authorizeRequests ->
@@ -101,24 +102,22 @@ public class AuthorizationServerConfig {
 	public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
 
 		RegisteredClient client = RegisteredClient
-				.withId("ddd")
+				// .withId("ddd")
+				.withId(UUID.randomUUID().toString())
 				.clientId("ddd")
 				// {noop} 这个是说NoOpPasswordEncoder
 				// https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html
 				.clientSecret("{noop}ddd")
 				// 授权方式
 				.clientAuthenticationMethods(clientAuthenticationMethods -> {
-					clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
-					clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_JWT);
-					clientAuthenticationMethods.add(ClientAuthenticationMethod.CLIENT_SECRET_POST);
-					clientAuthenticationMethods.add(ClientAuthenticationMethod.PRIVATE_KEY_JWT);
+					clientAuthenticationMethods.add(ClientAuthenticationMethod.BASIC);
+					clientAuthenticationMethods.add(ClientAuthenticationMethod.POST);
 				})
 				// 授权类型
 				.authorizationGrantTypes(authorizationGrantTypes -> {
 					authorizationGrantTypes.add(AuthorizationGrantType.AUTHORIZATION_CODE);
 					authorizationGrantTypes.add(AuthorizationGrantType.REFRESH_TOKEN);
 					authorizationGrantTypes.add(AuthorizationGrantType.CLIENT_CREDENTIALS);
-					authorizationGrantTypes.add(AuthorizationGrantType.JWT_BEARER);
 					authorizationGrantTypes.add(AuthorizationGrantType.PASSWORD);
 				})
 				// 回调地址名单，不在此列将被拒绝 而且只能使用IP或者域名  不能使用 localhost

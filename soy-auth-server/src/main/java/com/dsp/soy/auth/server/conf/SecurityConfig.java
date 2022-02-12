@@ -24,8 +24,8 @@ public class SecurityConfig {
 	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
 				.csrf().disable()
-				.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-						authorizationManagerRequestMatcherRegistry.anyRequest().authenticated()
+				.authorizeRequests(authorizeRequests ->
+						authorizeRequests.anyRequest().authenticated()
 				)
 				.formLogin(Customizer.withDefaults())
 		;
